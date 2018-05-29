@@ -40,7 +40,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 function postTweet(track, callback) {
-    let tweetStrint = `#nowplaying ${track.url} ${track.artist} - ${track.name}`;
+    let tweetStrint = `#nowplaying http://on-ill.fm/ \r\n${track.artist} - ${track.name}`;
     console.error(tweetStrint);
     
     client.post('statuses/update', { status: tweetStrint }, function(error, tweet, response) {
@@ -75,14 +75,18 @@ function fetchData(callback) {
                         postTweet(currentTrack, function() {
                             db.get('songs')
                                 .push({ id: shortid.generate(), name: currentTrack.name })
-                                .write()
+                                .write();
+                                if(callback) callback();
                         });
+                    }else{
+                        if(callback) callback();
                     }
                 }
                 //console.log(currentTrack);
 
             } catch (e) {
                 console.error(e.message);
+                if(callback) callback();
             }
         });
     });
@@ -90,13 +94,13 @@ function fetchData(callback) {
 
 var cron = require('node-cron');
 var running = false;
-cron.schedule('* 1 * * *', function() {
+cron.schedule('* * * * *', function() {
     console.log("im here");
     if (running) return;
     running = true;
     fetchData(function() {
         running = false;
-    })
+    });
 });
 
 
