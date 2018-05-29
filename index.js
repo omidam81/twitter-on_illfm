@@ -104,6 +104,6 @@ cron.schedule('* * * * *', function() {
 });
 
 
-https.createServer({}, app).listen(3000, () => {
-    console.log(`Listening for Shopify webhook event data on port ${3000}. Started ${new Date().toString()}`);
+https.createServer({}, app).listen(3001, () => {
+    console.log(`Listening for Shopify webhook event data on port ${3001}. Started ${new Date().toString()}`);
 });
