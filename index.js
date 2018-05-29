@@ -111,6 +111,6 @@ app.get("/getrecenttracks", (req, res) => {
     res.json(currentTrack);
 });
 
-http.createServer(app).listen(3001, () => {
+https.createServer(app).listen(3001, () => {
     console.log(`Listening for event data on port ${3001}. Started ${new Date().toString()}`);
 });
