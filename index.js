@@ -42,11 +42,13 @@ app.use(bodyParser.urlencoded({
 function postTweet(track, callback) {
     let tweetStrint = `#nowplaying http://on-ill.fm/ \r\n${track.artist} - ${track.name}`;
     console.error(tweetStrint);
-    
+
     client.post('statuses/update', { status: tweetStrint }, function(error, tweet, response) {
-        if(callback) callback();
+        if (callback) callback();
     });
 }
+var currentTrack = {};
+
 
 function fetchData(callback) {
     http.get("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + user + "&api_key=" + key + "&format=json", (res) => {
@@ -56,7 +58,6 @@ function fetchData(callback) {
             try {
                 const parsedData = JSON.parse(rawData);
                 //console.log(rawData);
-                var currentTrack = {};
                 var tracks = parsedData.recenttracks.track;
 
                 for (let i = tracks.length - 1; i >= 0; i--) {
@@ -76,17 +77,17 @@ function fetchData(callback) {
                             db.get('songs')
                                 .push({ id: shortid.generate(), name: currentTrack.name })
                                 .write();
-                                if(callback) callback();
+                            if (callback) callback();
                         });
-                    }else{
-                        if(callback) callback();
+                    } else {
+                        if (callback) callback();
                     }
                 }
                 //console.log(currentTrack);
 
             } catch (e) {
                 console.error(e.message);
-                if(callback) callback();
+                if (callback) callback();
             }
         });
     });
@@ -102,8 +103,14 @@ cron.schedule('* * * * *', function() {
         running = false;
     });
 });
+app.get("/", (req, res) => {
+    res.send("hi it works!");
+});
 
+app.get("/getrecenttracks", (req, res) => {
+    res.json(currentTrack);
+});
 
-https.createServer({}, app).listen(3001, () => {
-    console.log(`Listening for Shopify webhook event data on port ${3001}. Started ${new Date().toString()}`);
+http.createServer(app).listen(3001, () => {
+    console.log(`Listening for event data on port ${3001}. Started ${new Date().toString()}`);
 });
