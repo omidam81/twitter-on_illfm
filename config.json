@@ -5,6 +5,13 @@
         "key": "8c4723e5e29c018798a9cd8b8beb707e",
         "secret": "a57a4c53c4c26d0285c3fd2087cde94f",
         "RegisteredTo": "on_illfm"
+    },
+    "twitter":
+    {
+        "consumer_key": "cH73QVpo0cjlhbQ9rQ9svVb3O",
+        "consumer_secret": "UTqCBPyaVd9IxUT5DCE4sh1lI145YikW7Mb0YNvWnLumP5kHAP",
+        "access_token_key": "851977128966987777-UxnAtKqn0PDaUJTJutg6ycRaYGPlBM6",
+        "access_token_secret": "aFttAb8thP0QGLMBUQqcEyqX29IpOQRw2u231qDuu6dNa"
     }
 
 }

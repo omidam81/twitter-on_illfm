@@ -8,6 +8,28 @@ const config = require('./config.json');
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
+const shortid = require('shortid')
+
+
+const Twitter = require('twitter');
+
+const client = new Twitter({
+    consumer_key: config.twitter.consumer_key,
+    consumer_secret: config.twitter.consumer_secret,
+    access_token_key: config.twitter.access_token_key,
+    access_token_secret: config.twitter.access_token_secret
+});
+
+
+//setting up db
+
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+
+const adapter = new FileSync('db.json')
+const db = low(adapter)
+
+
 
 const key = config.api.key;
 const user = config.api.RegisteredTo;
@@ -16,6 +38,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true,
 }));
+
+function postTweet(track, callback) {
+    let tweetStrint = `#nowplaying ${track.url} ${track.artist} - ${track.name}`;
+    console.error(tweetStrint);
+    
+    client.post('statuses/update', { status: tweetStrint }, function(error, tweet, response) {
+        if(callback) callback();
+    });
+}
 
 function fetchData(callback) {
     http.get("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + user + "&api_key=" + key + "&format=json", (res) => {
@@ -36,8 +67,19 @@ function fetchData(callback) {
                         currentTrack.artist = t.artist["#text"];
                     }
                 }
-
-                console.log(currentTrack);
+                if (currentTrack.name) {
+                    var x = db.get('songs')
+                        .find({ name: currentTrack.name })
+                        .value();
+                    if (!x || !x.name) {
+                        postTweet(currentTrack, function() {
+                            db.get('songs')
+                                .push({ id: shortid.generate(), name: currentTrack.name })
+                                .write()
+                        });
+                    }
+                }
+                //console.log(currentTrack);
 
             } catch (e) {
                 console.error(e.message);
@@ -49,6 +91,7 @@ function fetchData(callback) {
 var cron = require('node-cron');
 var running = false;
 cron.schedule('* 1 * * *', function() {
+    console.log("im here");
     if (running) return;
     running = true;
     fetchData(function() {
