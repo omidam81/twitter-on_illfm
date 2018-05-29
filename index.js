@@ -95,6 +95,17 @@ function fetchData(callback) {
 
 var cron = require('node-cron');
 var running = false;
+
+var hskey = fs.readFileSync(config.config.hskeyPath);
+var hscert = fs.readFileSync(config.config.hscert);
+
+var options = {
+    key: hskey,
+    cert: hscert
+};
+
+
+
 cron.schedule('* * * * *', function() {
     console.log("im here");
     if (running) return;
@@ -111,6 +122,6 @@ app.get("/getrecenttracks", (req, res) => {
     res.json(currentTrack);
 });
 
-https.createServer(app).listen(3001, () => {
+https.createServer(options ,app).listen(3001, () => {
     console.log(`Listening for event data on port ${3001}. Started ${new Date().toString()}`);
 });
