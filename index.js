@@ -114,7 +114,7 @@ app.get("/", (req, res) => {
     res.send("hi it works!");
 });
 
-app.get("/getrecenttracks", (req, res) => {
+app.get("/", (req, res) => {
     res.json(currentTrack);
 });
 
