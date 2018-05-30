@@ -111,10 +111,6 @@ cron.schedule('* * * * *', function() {
     });
 });
 app.get("/", (req, res) => {
-    res.send("hi it works!");
-});
-
-app.get("/", (req, res) => {
     res.json(currentTrack);
 });
 
