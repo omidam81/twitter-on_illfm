@@ -66,7 +66,6 @@ function fetchData(callback) {
                     let t = tracks[i];
                     if (t['@attr'] && t['@attr'].nowplaying) {
                         currentTrack.name = t.name;
-                        currentTrack.url = t.url;
                         currentTrack.artist = t.artist["#text"];
                     }
                 }
