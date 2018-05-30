@@ -44,6 +44,7 @@ function postTweet(track, callback) {
     console.error(tweetStrint);
 
     client.post('statuses/update', { status: tweetStrint }, function(error, tweet, response) {
+        console.log(error);
         if (callback) callback();
     });
 }
